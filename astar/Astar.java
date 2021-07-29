@@ -13,27 +13,27 @@ public class Astar{
     public static void main(String[] args) throws IOException{
         //Building the graph
         //Adding nodes
-        Node e1 = new Node(1, "Blue", 0);
-        Node e2_blue = new Node(2, "Blue", 0);
-        Node e2_yellow = new Node(2, "Yellow", 0);
-        Node e3_blue = new Node(3, "Blue", 0);
-        Node e3_red = new Node(3, "Red", 0);
-        Node e4_blue = new Node(4, "Blue", 0);
-        Node e4_green = new Node(4, "Green", 0);
-        Node e5_blue = new Node(5, "Blue", 0);
-        Node e5_yellow = new Node(5, "Yellow", 0);
-        Node e6 = new Node(6, "Blue", 0);
-        Node e7 = new Node(7, "Yellow", 0);
-        Node e8_yellow = new Node(8, "Yellow", 0);
-        Node e8_green = new Node(8, "Green", 0);
-        Node e9_yellow = new Node(9, "Yellow", 0);
-        Node e9_red = new Node(9, "Red", 0);
-        Node e10 = new Node(10, "Yellow", 0);
-        Node e11 = new Node(11, "Red", 0);
-        Node e12 = new Node(12, "Green", 0);
-        Node e13_green = new Node(13, "Green", 0);
-        Node e13_red = new Node(13, "Red", 0);
-        Node e14 = new Node(14, "Green", 0);
+        Node e1 = new Node(1, "Blue", Double.POSITIVE_INFINITY);
+        Node e2_blue = new Node(2, "Blue", Double.POSITIVE_INFINITY);
+        Node e2_yellow = new Node(2, "Yellow", Double.POSITIVE_INFINITY);
+        Node e3_blue = new Node(3, "Blue", Double.POSITIVE_INFINITY);
+        Node e3_red = new Node(3, "Red", Double.POSITIVE_INFINITY);
+        Node e4_blue = new Node(4, "Blue", Double.POSITIVE_INFINITY);
+        Node e4_green = new Node(4, "Green", Double.POSITIVE_INFINITY);
+        Node e5_blue = new Node(5, "Blue", Double.POSITIVE_INFINITY);
+        Node e5_yellow = new Node(5, "Yellow", Double.POSITIVE_INFINITY);
+        Node e6 = new Node(6, "Blue", Double.POSITIVE_INFINITY);
+        Node e7 = new Node(7, "Yellow", Double.POSITIVE_INFINITY);
+        Node e8_yellow = new Node(8, "Yellow", Double.POSITIVE_INFINITY);
+        Node e8_green = new Node(8, "Green", Double.POSITIVE_INFINITY);
+        Node e9_yellow = new Node(9, "Yellow", Double.POSITIVE_INFINITY);
+        Node e9_red = new Node(9, "Red", Double.POSITIVE_INFINITY);
+        Node e10 = new Node(10, "Yellow", Double.POSITIVE_INFINITY);
+        Node e11 = new Node(11, "Red", Double.POSITIVE_INFINITY);
+        Node e12 = new Node(12, "Green", Double.POSITIVE_INFINITY);
+        Node e13_green = new Node(13, "Green", Double.POSITIVE_INFINITY);
+        Node e13_red = new Node(13, "Red", Double.POSITIVE_INFINITY);
+        Node e14 = new Node(14, "Green", Double.POSITIVE_INFINITY);
         //Adding edges
         add_connection(e1, e2_blue, 10*2);
         add_connection(e2_blue, e2_yellow, 4);
@@ -63,9 +63,10 @@ public class Astar{
         // Building table 01
         heurist_values();
 
-        Node begin = e3_red;
-        Node end = e14;
+        Node begin = e6;
+        Node end = e13_red;
         PriorityQueue<Pair> frontier = new PriorityQueue<>(new PairComparator());
+        begin.totalCost = 0.0;
         frontier.add(new Pair((begin.totalCost + h[begin.station][end.station]), begin));
         
         a_star(end, frontier);
@@ -84,10 +85,12 @@ public class Astar{
                 for (Pair edge : parentNode.connections) {
                     Node childNode = edge.getNode();
                     if(!childNode.isVisited){
-                        childNode.parentNode = parentNode;
-                        childNode.totalCost = parentNode.totalCost + edge.getCost();
-                        Double f = childNode.totalCost + h[childNode.station][destination.station];
-                        frontier.add(new Pair(f, childNode));
+                        if(parentNode.totalCost + edge.getCost() < childNode.totalCost){
+                            childNode.parentNode = parentNode;
+                            childNode.totalCost = parentNode.totalCost + edge.getCost();
+                            Double f = childNode.totalCost + h[childNode.station][destination.station];
+                            frontier.add(new Pair(f, childNode));
+                        }
                     }
                 }
                 parentNode.isVisited = true;
