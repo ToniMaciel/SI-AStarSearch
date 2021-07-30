@@ -81,20 +81,18 @@ public class Astar{
             Node parentNode = frontier.poll().getNode();
             iteration++;
             
-            if(!parentNode.isVisited){
-                for (Pair edge : parentNode.connections) {
-                    Node childNode = edge.getNode();
-                    if(!childNode.isVisited){
-                        if(parentNode.totalCost + edge.getCost() < childNode.totalCost){
-                            childNode.parentNode = parentNode;
-                            childNode.totalCost = parentNode.totalCost + edge.getCost();
-                            Double f = childNode.totalCost + h[childNode.station][destination.station];
-                            frontier.add(new Pair(f, childNode));
-                        }
+            for (Pair edge : parentNode.connections) {
+                Node childNode = edge.getNode();
+                if(!childNode.isVisited){
+                    if(parentNode.totalCost + edge.getCost() < childNode.totalCost){
+                        childNode.parentNode = parentNode;
+                        childNode.totalCost = parentNode.totalCost + edge.getCost();
+                        Double f = childNode.totalCost + h[childNode.station][destination.station];
+                        frontier.add(new Pair(f, childNode));
                     }
                 }
-                parentNode.isVisited = true;
             }
+            parentNode.isVisited = true;
         }
 
         printFrontier(frontier, iteration, destination);
